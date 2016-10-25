@@ -1,0 +1,102 @@
+---
+title:  "MSDS_6306_HW4_Bootstrap"
+author: "Jim Brittain"
+date:   "October 23, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# MSDS_6306_HW4_Bootstrap
+
+## MSDS 6306 - Section 405 - Jim Brittain
+
+
+##• Write bootstrap code to illustrate the Central Limit Theorem in R markdown and push result to GitHub. 
+##• Use a normal distribution with two different sample sizes and an exponential distribution with two different sample sizes. 
+
+
+
+```{r Bootstrap, echo=TRUE}
+## Bring in RESHAPE Package
+library(reshape2)
+
+
+## Create a Simple Random Sample Normal ditribution using RNORM
+NormSRS <- rnorm(n=100, mean=20, sd=5)
+## Get the Mean of our sample
+NormXbar <- mean(NormSRS)
+NormXbar
+## Create a Simple Random Sample Exponential ditribution using REXP
+ExpSRS <- rexp(n=100, rate=1/20)
+## Get the Mean of our sample
+ExpXbar <- mean(ExpSRS)
+ExpXbar
+
+## Initialize Number of Bootstrap Repititions and 4 vectors for values
+BootReps <- 10000
+# Normal sample size=10
+BootNorm10  <- numeric(BootReps)
+# Normal sample size=50
+BootNorm50  <- numeric(BootReps)
+# Exponential sample size=10
+BootExp10   <- numeric(BootReps)
+# Exponential sample size=50
+BootExp50   <- numeric(BootReps)
+
+## Use For Loop to run Bootstrap
+## For each repitition take a sample from our original sample with replacement
+## Then get the Mean and assign it as an element of the vector
+for (i in 1:BootReps) {
+  # Sample Nornal 10
+  temp <- sample(x=NormSRS, size=10, replace=TRUE)
+  BootNorm10[i] <- mean(temp) 
+  # Sample Nornal 50
+  temp <- sample(x=NormSRS, size=50, replace=TRUE)
+  BootNorm50[i] <- mean(temp) 
+  # Sample Exponential 10
+  temp <- sample(x=ExpSRS, size=10, replace=TRUE)
+  BootExp10[i] <- mean(temp) 
+  # Sample Exponential 50
+  temp <- sample(x=ExpSRS, size=50, replace=TRUE)
+  BootExp50[i] <- mean(temp) 
+}
+
+## Get Summary info from Original Samples and each of the Bootstrap samples
+summary(NormSRS)
+summary(BootNorm10)
+summary(BootNorm50)
+summary(ExpSRS)
+summary(BootExp10)
+summary(BootExp50)
+
+## Put Original and 2 Bootstrap samples together to graph
+NormDat <- data.frame(NormOrig=NormSRS, NB10=BootNorm10, EB50=BootNorm50)
+ExpDat  <- data.frame(ExpOrig=ExpSRS  , EB10=BootExp10,  EB50=BootExp50)
+
+## Reshape data wide -> long
+NormLong <- melt(NormDat)
+ExpLong  <- melt(ExpDat)
+```
+##------------------------------------------------------------
+
+
+## Plot 3 samples to demonstrate the Central Limit Theorem (Normal Ditribution)
+```{r Plot Normal, echo=TRUE}
+plot(value ~ variable, data=NormLong)
+```
+
+## From the comparison Boxplots for the NORMAL distribution; you can see a very normal distribution in the original sample.  With a Bootstrap of 10 samples then a Bootstrap of 50 samples we show that based on the Central Limit Theorem the more samples you take the less variance and closer you will get to the true Mean.
+##------------------------------------------------------------
+
+
+## Plot 3 samples to demonstrate the Central Limit Theorem (Exponential Ditribution)
+
+```{r Plot Exponential, echo=TRUE}
+plot(value ~ variable, data=ExpLong)
+```
+
+## From the comparison Boxplots for the EXPONENTIAL distribution; you can see a very right skewed distribution in the original sample.  With a Bootstrap of 10 samples then a Bootstrap of 50 samples we show that based on the Central Limit Theorem the more samples you take the less variance and closer you will get to the true Mean.  In the case of the exponential distribution the more samples get you closer to a normal distribution.
+##------------------------------------------------------------
