@@ -1,6 +1,8 @@
 # MSDS_6306_HW4_Bootstrap
 
 # ASSIGNMENT HOMEWORK #4
+## Jim Brittain MSDS 6306 Section 405
+
 ##• Write bootstrap code to illustrate the Central Limit Theorem in R markdown and push result to GitHub. 
 ##• Use a normal distribution with two different sample sizes and an exponential distribution with two different sample sizes. 
 ##• Correct code alone is insufficient. Please also comment the code and explain the results. 
